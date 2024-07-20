@@ -6,6 +6,7 @@ import {
   getReviews,
   deleteReview,
   updateReview,
+  updateReviewLikes,
 } from "../controllers/review.controller";
 import { authorizeReviewOwner } from "../middleware/auth.middleware";
 
@@ -18,6 +19,11 @@ router.delete(
   verifyToken,
   authorizeReviewOwner,
   deleteReview
+);
+router.put(
+  "/:businessId/reviews/:reviewId/like",
+  verifyToken,
+  updateReviewLikes
 );
 router.put(
   "/:businessId/reviews/:reviewId",

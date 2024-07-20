@@ -43,7 +43,7 @@ const businesses = [
       phoneNumber: "123-456-7890",
       websiteLink: "https://coffeeshop.com",
     },
-    rating: 4.5,
+    rating: 0,
     reviews: [],
   },
   {
@@ -56,7 +56,7 @@ const businesses = [
       phoneNumber: "987-654-3210",
       websiteLink: "https://pizzaplace.com",
     },
-    rating: 4.7,
+    rating: 0,
     reviews: [],
   },
 ];
@@ -64,11 +64,23 @@ const businesses = [
 const reviews = [
   {
     content: "Great coffee and friendly staff!",
-    likes: 10,
+    likes: ["john_doe", "jane_doe"], // usernames of the users who liked the review
+    rating: 5,
   },
   {
     content: "Amazing pizza and fast service!",
-    likes: 8,
+    likes: ["john_doe"], // usernames of the users who liked the review
+    rating: 4,
+  },
+  {
+    content: "Nice ambiance but the coffee is too bitter.",
+    likes: ["jane_doe"], // usernames of the users who liked the review
+    rating: 3,
+  },
+  {
+    content: "The pizza was too greasy.",
+    likes: [], // No likes
+    rating: 2,
   },
 ];
 
@@ -95,29 +107,36 @@ async function seedDB() {
     // Create reviews and associate them with users and businesses
     const createdReviews = await Promise.all(
       reviews.map(async (r, index) => {
+        const userLikes = r.likes.map(
+          (username) =>
+            createdUsers.find((user) => user.username === username)!._id
+        );
+
         const review = new Review({
           ...r,
           user: createdUsers[index % createdUsers.length]._id,
           business: createdBusinesses[index % createdBusinesses.length]._id,
+          likes: userLikes,
         });
         await review.save();
-
-        // Update the respective business and user with the review
-        await Business.findByIdAndUpdate(
-          review.business,
-          { $push: { reviews: review._id } },
-          { new: true }
-        );
-
-        await User.findByIdAndUpdate(
-          review.user,
-          { $push: { reviews: review._id } },
-          { new: true }
-        );
-
         return review;
       })
     );
+
+    // Update user reviews and likes
+    for (const review of createdReviews) {
+      await User.findByIdAndUpdate(review.user, {
+        $push: { reviews: review._id },
+      });
+
+      for (const userId of review.likes) {
+        await User.findByIdAndUpdate(userId, { $push: { likes: review._id } });
+      }
+
+      await Business.findByIdAndUpdate(review.business, {
+        $push: { reviews: review._id },
+      });
+    }
 
     console.log("Database seeded");
   } catch (err) {
