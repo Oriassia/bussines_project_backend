@@ -1,17 +1,12 @@
-import express, { Request, Response } from "express";
-import Business, { IBusiness } from "../models/business.model";
+import express from "express";
 
 const router = express.Router();
-
-async function getBusinesses(req: Request, res: Response): Promise<void> {
-  try {
-    const businesses: IBusiness[] = await Business.find().exec();
-    res.status(200).json(businesses);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
+import {
+  getBusinesses,
+  getBusinessById,
+} from "../controllers/business.controller";
 
 router.get("/", getBusinesses);
+router.get("/:businessId", getBusinessById);
 
 export default router;

@@ -10,7 +10,11 @@ async function createReview(req: Request, res: Response): Promise<void> {
 
   try {
     // Create and save the new task
-    const newReviewData: Omit<IReview, "_id"> = { ...req.body, user: userId };
+    const newReviewData: Omit<IReview, "_id"> = {
+      ...req.body,
+      user: userId,
+      business: businessId,
+    };
     const newReview = new Review(newReviewData);
     const tempReview = await newReview.save();
 
@@ -36,25 +40,30 @@ async function createReview(req: Request, res: Response): Promise<void> {
 }
 
 async function deleteReview(req: Request, res: Response): Promise<void> {
-  const { id } = req.params;
+  const { reviewId } = req.params;
   const { userId } = req;
-
   try {
-    const deletedReview: IReview | null = await Review.findByIdAndDelete(id);
+    const deletedReview: IReview | null = await Review.findByIdAndDelete(
+      reviewId
+    ).exec();
 
     if (!deletedReview) {
-      res.status(404).json({ message: "Review not found" });
+      res
+        .status(404)
+        .json({ message: `Review not found with the id: ${reviewId}` });
       return;
     }
 
     await User.findByIdAndUpdate(userId, {
-      $pull: { reviews: id },
+      $pull: { reviews: reviewId },
     });
 
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error: any) {
     if (error.name === "CastError") {
-      res.status(404).json({ message: "Review not found" });
+      res
+        .status(404)
+        .json({ message: `Review not found with the id: ${reviewId}` });
       return;
     }
     res.status(500).json({ message: error.message });
@@ -75,11 +84,11 @@ async function getReviews(req: Request, res: Response): Promise<void> {
 
 async function updateReview(req: Request, res: Response): Promise<void> {
   const updatedData: Partial<IReview> = req.body;
-  const { id } = req.params;
+  const { reviewId } = req.params;
 
   try {
     const updatedReview: IReview | null = await Review.findByIdAndUpdate(
-      id,
+      reviewId,
       updatedData, // {content: "i think this place is great!"}
       { new: true }
     );

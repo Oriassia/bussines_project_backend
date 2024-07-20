@@ -46,7 +46,7 @@ export async function authorizeReviewOwner(
   res: Response,
   next: NextFunction
 ) {
-  const { id: reviewId } = req.params;
+  const { reviewId } = req.params;
   const review = await Review.findById(reviewId);
   if (!review) {
     return res.status(404).json({ message: "Review not found" });
