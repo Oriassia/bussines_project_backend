@@ -4,7 +4,8 @@ export interface IReview extends Document {
   user: Types.ObjectId;
   content: string;
   business: Types.ObjectId;
-  likes: number;
+  likes: Types.ObjectId[];
+  rating: number;
 }
 
 const reviewSchema = new Schema<IReview>(
@@ -12,7 +13,8 @@ const reviewSchema = new Schema<IReview>(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String, required: true },
     business: { type: Schema.Types.ObjectId, ref: "Business", required: true },
-    likes: { type: Number, default: 0 },
+    likes: [{ type: Types.ObjectId, ref: "User", default: [] }],
+    rating: { type: Number, max: 5, min: 0, required: true },
   },
   { timestamps: true }
 );
