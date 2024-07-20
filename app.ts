@@ -24,7 +24,8 @@ import businessRoutes from "./src/routes/businesses.route";
 import reviewRoutes from "./src/routes/reviews.route";
 
 app.use("/api/users", verifyToken, userRoutes);
-app.use("/api/businesses", businessRoutes);
+app.use("/api/businesses", businessRoutes, reviewRoutes);
+// app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", authRoutes);
 
 export default app;

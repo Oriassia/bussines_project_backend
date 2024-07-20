@@ -11,9 +11,19 @@ import { authorizeReviewOwner } from "../middleware/auth.middleware";
 
 const router: Router = express.Router();
 
-router.get("/:businessId", getReviews);
-router.post("/:businessId", verifyToken, createReview);
-router.delete("/:id", verifyToken, authorizeReviewOwner, deleteReview);
-router.put("/:id", verifyToken, updateReview);
+router.get("/:businessId/reviews", getReviews);
+router.post("/:businessId/reviews", verifyToken, createReview);
+router.delete(
+  "/:businessId/reviews/:reviewId",
+  verifyToken,
+  authorizeReviewOwner,
+  deleteReview
+);
+router.put(
+  "/:businessId/reviews/:reviewId",
+  verifyToken,
+  authorizeReviewOwner,
+  updateReview
+);
 
 export default router;
