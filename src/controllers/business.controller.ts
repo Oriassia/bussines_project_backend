@@ -15,19 +15,20 @@ export async function getBusinesses(
 export async function getBusinessById(
   req: Request,
   res: Response
-): Promise<Response> {
+): Promise<void> {
   const { businessId } = req.params;
   try {
     const business: IBusiness | null = await Business.findById(
       businessId
     ).exec();
-    return res.status(200).json(business);
+    res.status(200).json(business);
   } catch (error: any) {
     if (error.name === "CastError") {
-      return res
+      res
         .status(404)
         .json({ message: `Business not found with id: ${businessId}` });
+      return;
     }
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 }

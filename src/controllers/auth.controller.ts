@@ -26,8 +26,10 @@ export async function register(req: Request, res: Response): Promise<void> {
     await user.save(); // Save user to database
     res.status(200).json({ message: "User registered successfully" });
   } catch (error: any) {
-    if (error.code === 11000)
+    if (error.code === 11000) {
       res.status(400).json({ error: "User already exists" });
+      return;
+    }
 
     res.status(500).json({ error: error.message });
   }
@@ -38,11 +40,16 @@ export async function login(req: Request, res: Response): Promise<void> {
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
-    if (!user) res.status(401).json({ error: "Authentication failed" });
+    if (!user) {
+      res.status(401).json({ error: "Authentication failed" });
+      return;
+    }
 
     const isPasswordMatch = await bcrypt.compare(password, user!.password);
-    if (!isPasswordMatch)
+    if (!isPasswordMatch) {
       res.status(401).json({ error: "Authentication failed" });
+      return;
+    }
 
     // Generate JWT token containing user id
     const token = jwt.sign({ userId: user!._id }, JWT_SECRET!, {

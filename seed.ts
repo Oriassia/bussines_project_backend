@@ -6,6 +6,7 @@ import connectDB from "./src/config/db";
 import User from "./src/models/user.model";
 import Business from "./src/models/business.model";
 import Review from "./src/models/review.model";
+import Like from "./src/models/likes.model";
 
 dotenv.config(); // Load environment variables
 
@@ -18,8 +19,6 @@ const users = [
     email: "john@example.com",
     firstName: "John",
     lastName: "Doe",
-    reviews: [],
-    likes: [],
   },
   {
     username: "jane_doe",
@@ -27,8 +26,6 @@ const users = [
     email: "jane@example.com",
     firstName: "Jane",
     lastName: "Doe",
-    reviews: [],
-    likes: [],
   },
 ];
 
@@ -44,7 +41,6 @@ const businesses = [
       websiteLink: "https://coffeeshop.com",
     },
     rating: 0,
-    reviews: [],
   },
   {
     name: "Pizza Place",
@@ -57,29 +53,28 @@ const businesses = [
       websiteLink: "https://pizzaplace.com",
     },
     rating: 0,
-    reviews: [],
   },
 ];
 
 const reviews = [
   {
     content: "Great coffee and friendly staff!",
-    likes: ["john_doe", "jane_doe"], // usernames of the users who liked the review
+    likes: 0,
     rating: 5,
   },
   {
     content: "Amazing pizza and fast service!",
-    likes: ["john_doe"], // usernames of the users who liked the review
+    likes: 0,
     rating: 4,
   },
   {
     content: "Nice ambiance but the coffee is too bitter.",
-    likes: ["jane_doe"], // usernames of the users who liked the review
+    likes: 0,
     rating: 3,
   },
   {
     content: "The pizza was too greasy.",
-    likes: [], // No likes
+    likes: 0,
     rating: 2,
   },
 ];
@@ -90,7 +85,9 @@ async function seedDB() {
     await User.deleteMany({});
     await Business.deleteMany({});
     await Review.deleteMany({});
+    await Like.deleteMany({});
 
+    await Like.insertMany([]);
     // Hash passwords and create users
     const createdUsers = await Promise.all(
       users.map(async (u) => {
@@ -107,36 +104,15 @@ async function seedDB() {
     // Create reviews and associate them with users and businesses
     const createdReviews = await Promise.all(
       reviews.map(async (r, index) => {
-        const userLikes = r.likes.map(
-          (username) =>
-            createdUsers.find((user) => user.username === username)!._id
-        );
-
         const review = new Review({
           ...r,
           user: createdUsers[index % createdUsers.length]._id,
           business: createdBusinesses[index % createdBusinesses.length]._id,
-          likes: userLikes,
         });
         await review.save();
         return review;
       })
     );
-
-    // Update user reviews and likes
-    for (const review of createdReviews) {
-      await User.findByIdAndUpdate(review.user, {
-        $push: { reviews: review._id },
-      });
-
-      for (const userId of review.likes) {
-        await User.findByIdAndUpdate(userId, { $push: { likes: review._id } });
-      }
-
-      await Business.findByIdAndUpdate(review.business, {
-        $push: { reviews: review._id },
-      });
-    }
 
     console.log("Database seeded");
   } catch (err) {

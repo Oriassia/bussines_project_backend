@@ -13,7 +13,6 @@ export interface IBusiness extends Document {
   category: string;
   contactInfo: IContactInfo;
   rating: number;
-  reviews: Types.ObjectId[];
 }
 
 const contactInfoSchema = new Schema<IContactInfo>(
@@ -34,7 +33,6 @@ const businessSchema = new Schema<IBusiness>({
   category: { type: String, required: true },
   contactInfo: { type: contactInfoSchema, required: true },
   rating: { type: Number, required: true, default: 0 },
-  reviews: [{ type: Types.ObjectId, ref: "Review", default: [] }],
 });
 
 const Business = model<IBusiness>("Business", businessSchema);

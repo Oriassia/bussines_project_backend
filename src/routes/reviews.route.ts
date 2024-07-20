@@ -3,33 +3,19 @@ import { Router } from "express";
 import { verifyToken } from "../middleware/auth.middleware";
 import {
   createReview,
-  getReviews,
+  deleteLike,
   deleteReview,
+  postLike,
   updateReview,
-  updateReviewLikes,
 } from "../controllers/review.controller";
 import { authorizeReviewOwner } from "../middleware/auth.middleware";
 
 const router: Router = express.Router();
 
-router.get("/:businessId/reviews", getReviews);
-router.post("/:businessId/reviews", verifyToken, createReview);
-router.delete(
-  "/:businessId/reviews/:reviewId",
-  verifyToken,
-  authorizeReviewOwner,
-  deleteReview
-);
-router.put(
-  "/:businessId/reviews/:reviewId/like",
-  verifyToken,
-  updateReviewLikes
-);
-router.put(
-  "/:businessId/reviews/:reviewId",
-  verifyToken,
-  authorizeReviewOwner,
-  updateReview
-);
+router.post("/", verifyToken, createReview);
+router.delete("/:reviewId", verifyToken, authorizeReviewOwner, deleteReview);
+router.put("/:reviewId", verifyToken, authorizeReviewOwner, updateReview);
+router.post("/:reviewId/likes", verifyToken, postLike);
+router.delete("/:reviewId/likes", verifyToken, deleteLike);
 
 export default router;
