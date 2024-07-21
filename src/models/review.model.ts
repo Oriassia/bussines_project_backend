@@ -1,4 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
+import Like from "./likes.model";
+import User from "./user.model";
 
 export interface IReview extends Document {
   user: Types.ObjectId;
@@ -18,6 +20,18 @@ const reviewSchema = new Schema<IReview>(
   },
   { timestamps: true }
 );
+
+reviewSchema.pre("findOneAndDelete", async function (next) {
+  const reviewId = this.getQuery()["_id"];
+
+  // Delete all likes related to the review
+  await Like.deleteMany({ review: reviewId });
+
+  // Update users who liked the review
+  await User.updateMany({ likes: reviewId }, { $pull: { likes: reviewId } });
+
+  next();
+});
 
 const Review = model<IReview>("Review", reviewSchema);
 export default Review;
