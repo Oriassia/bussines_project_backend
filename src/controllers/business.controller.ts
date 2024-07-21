@@ -26,6 +26,7 @@ export async function getBusinessAndReviewsById(
     const reviewList: IReview[] | null = await Review.find({
       business: businessId,
     })
+      .populate("user", "username")
       .lean()
       .exec();
 
