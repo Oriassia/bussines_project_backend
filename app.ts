@@ -3,9 +3,18 @@ dotenv.config(); // Load config
 import { verifyToken } from "./src/middleware/auth.middleware";
 
 import express, { Application } from "express";
-const app: Application = express();
 import cors from "cors";
 import connectDB from "./src/config/db";
+import { createServer, Server } from "http";
+import { Server as SocketIOServer } from "socket.io";
+
+const app: Application = express();
+const server: Server = createServer(app);
+export const io = new SocketIOServer(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 // Connect to MongoDB
 connectDB();

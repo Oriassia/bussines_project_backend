@@ -16,10 +16,10 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
     const { password, ...userWithoutPassword } = user.toObject();
 
     res.status(200).json(userWithoutPassword);
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
 router.get("/", getUser);
 
