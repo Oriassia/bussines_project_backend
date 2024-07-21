@@ -39,9 +39,9 @@ async function createReview(req: Request, res: Response): Promise<void> {
 async function deleteReview(req: Request, res: Response): Promise<void> {
   const { reviewId } = req.params;
   try {
-    const deletedReview: IReview | null = await Review.findByIdAndDelete(
-      reviewId
-    ).exec();
+    const deletedReview: IReview | null = await Review.findOneAndDelete({
+      _id: reviewId,
+    }).exec();
 
     updateBusinessRating(deletedReview!.business);
     io.emit("reviewDeleted", deletedReview);
@@ -81,6 +81,11 @@ async function postLike(req: Request, res: Response): Promise<void> {
   const { userId } = req;
   const { reviewId } = req.params;
   try {
+    const checkReview = await Review.findById(reviewId);
+    if (!checkReview) {
+      res.status(404).json({ message: "Review not found!" });
+      return;
+    }
     const newLike = new Like({
       review: reviewId,
       user: userId,
