@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Review, { IReview } from "../models/review.model";
 import { updateBusinessRating } from "../middleware/rating.middleware";
 import Like from "../models/likes.model";
+import User from "../models/user.model";
 
 async function getReviews(req: Request, res: Response): Promise<void> {
   const { businessId } = req.params;
@@ -82,6 +83,7 @@ async function postLike(req: Request, res: Response): Promise<void> {
     });
     const savedLike = await newLike.save();
     await Review.findByIdAndUpdate(reviewId, { $inc: { likes: 1 } });
+    await User.findByIdAndUpdate(userId, { $push: { likes: reviewId } });
     res.status(201).json(savedLike);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -94,6 +96,7 @@ async function deleteLike(req: Request, res: Response): Promise<void> {
   try {
     await Like.findOneAndDelete({ user: userId, review: reviewId });
     await Review.findByIdAndUpdate(reviewId, { $inc: { likes: -1 } });
+    await User.findByIdAndUpdate(userId, { $pull: { likes: reviewId } });
     res.status(201).json({ message: "Like removed successfully" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

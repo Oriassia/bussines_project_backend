@@ -19,6 +19,7 @@ const users = [
     email: "john@example.com",
     firstName: "John",
     lastName: "Doe",
+    likes: [],
   },
   {
     username: "jane_doe",
@@ -26,17 +27,20 @@ const users = [
     email: "jane@example.com",
     firstName: "Jane",
     lastName: "Doe",
+    likes: [],
   },
 ];
 
 const businesses = [
   {
     name: "Coffee Shop",
-    image: "coffee.jpg",
-    description: "A great place to drink coffee",
+    image: "https://picsum.photos/200/300?random=1",
+    description: "A great place to drink coffee and smoke",
     category: "Cafe",
     contactInfo: {
       address: "123 Coffee St.",
+      openAt: "09:00",
+      closeAt: "22:00",
       phoneNumber: "123-456-7890",
       websiteLink: "https://coffeeshop.com",
     },
@@ -44,11 +48,13 @@ const businesses = [
   },
   {
     name: "Pizza Place",
-    image: "pizza.jpg",
+    image: "https://picsum.photos/200/300?random=3",
     description: "Delicious pizza and more",
     category: "Restaurant",
     contactInfo: {
       address: "456 Pizza Rd.",
+      openAt: "09:00",
+      closeAt: "22:00",
       phoneNumber: "987-654-3210",
       websiteLink: "https://pizzaplace.com",
     },

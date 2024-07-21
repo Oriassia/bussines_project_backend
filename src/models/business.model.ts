@@ -2,6 +2,8 @@ import mongoose, { Schema, model, Document, Types } from "mongoose";
 
 interface IContactInfo {
   address: string;
+  openAt: String;
+  closeAt: String;
   phoneNumber: string;
   websiteLink: string;
 }
@@ -18,6 +20,8 @@ export interface IBusiness extends Document {
 const contactInfoSchema = new Schema<IContactInfo>(
   {
     address: { type: String, required: true },
+    openAt: { type: String, required: true },
+    closeAt: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     websiteLink: { type: String, required: true },
   },

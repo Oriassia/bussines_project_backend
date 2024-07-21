@@ -6,6 +6,7 @@ export interface IUser extends Document {
   email: string;
   firstName: string;
   lastName: string;
+  likes: Types.ObjectId[];
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -15,6 +16,9 @@ const userSchema = new mongoose.Schema<IUser>(
     email: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
+    likes: [
+      { type: Types.ObjectId, ref: "Review", default: [], required: true },
+    ],
   },
   { timestamps: true }
 );

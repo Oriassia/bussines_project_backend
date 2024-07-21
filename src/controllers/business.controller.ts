@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Business, { IBusiness } from "../models/business.model";
+import Review, { IReview } from "../models/review.model";
 export async function getBusinesses(
   req: Request,
   res: Response
@@ -12,16 +13,24 @@ export async function getBusinesses(
   }
 }
 
-export async function getBusinessById(
+export async function getBusinessAndReviewsById(
   req: Request,
   res: Response
 ): Promise<void> {
   const { businessId } = req.params;
   try {
-    const business: IBusiness | null = await Business.findById(
-      businessId
-    ).exec();
-    res.status(200).json(business);
+    const business: IBusiness | null = await Business.findById(businessId)
+      .lean()
+      .exec();
+
+    const reviewList: IReview[] | null = await Review.find({
+      business: businessId,
+    })
+      .lean()
+      .exec();
+
+    const businessWithReview = { ...business, reviews: reviewList };
+    res.status(200).json(businessWithReview);
   } catch (error: any) {
     if (error.name === "CastError") {
       res
