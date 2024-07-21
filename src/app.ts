@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config(); // Load config
-import { verifyToken } from "./src/middleware/auth.middleware";
+import { verifyToken } from "./middleware/auth.middleware";
 
 import express, { Application } from "express";
 import cors from "cors";
-import connectDB from "./src/config/db";
+import connectDB from "./config/db";
 import { createServer, Server } from "http";
 import { Server as SocketIOServer } from "socket.io";
 
@@ -27,10 +27,10 @@ app.use(express.json());
 app.use(cors());
 
 // ROUTES
-import authRoutes from "./src/routes/auth.route";
-import userRoutes from "./src/routes/users.route";
-import businessRoutes from "./src/routes/businesses.route";
-import reviewRoutes from "./src/routes/reviews.route";
+import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/users.route";
+import businessRoutes from "./routes/businesses.route";
+import reviewRoutes from "./routes/reviews.route";
 
 app.use("/api/users", verifyToken, userRoutes);
 app.use("/api/businesses", businessRoutes);
