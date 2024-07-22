@@ -3,13 +3,16 @@ import Review, { IReview } from "../models/review.model";
 import Business from "../models/business.model";
 
 export async function updateBusinessRating(businessId: Types.ObjectId) {
+  let averageRating;
   const businessReviews = await Review.find({
     business: businessId,
   });
-  const averageRating =
-    businessReviews.reduce(
-      (sum: number, review: IReview) => sum + review.rating,
-      0
-    ) / businessReviews.length;
+  if (businessReviews.length === 0) averageRating = 0;
+  else {
+    averageRating =
+      businessReviews.reduce((sum: number, review: IReview) => {
+        return sum + review.rating ? review.rating : 0;
+      }, 0) / businessReviews.length;
+  }
   await Business.findByIdAndUpdate(businessId, { rating: averageRating });
 }

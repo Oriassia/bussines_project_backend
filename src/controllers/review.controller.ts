@@ -28,7 +28,7 @@ async function createReview(req: Request, res: Response): Promise<void> {
     };
     const newReview = new Review(newReviewData);
     const tempReview = await newReview.save();
-    updateBusinessRating(tempReview.business);
+    await updateBusinessRating(tempReview.business);
     io.emit("reviewCreated", tempReview);
     res.status(201).json(tempReview);
   } catch (error: any) {
@@ -43,7 +43,7 @@ async function deleteReview(req: Request, res: Response): Promise<void> {
       _id: reviewId,
     }).exec();
 
-    updateBusinessRating(deletedReview!.business);
+    await updateBusinessRating(deletedReview!.business);
     io.emit("reviewDeleted", deletedReview);
     res.status(200).json({ message: "Review deleted successfully" });
   } catch (error: any) {
@@ -66,7 +66,7 @@ async function updateReview(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    updateBusinessRating(updatedReview.business);
+    await updateBusinessRating(updatedReview.business);
     io.emit("reviewUpdated", updatedReview);
     res.status(200).json(updatedReview);
   } catch (error: any) {
