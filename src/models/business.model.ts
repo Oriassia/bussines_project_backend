@@ -17,6 +17,8 @@ export interface IBusiness extends Document {
   rating: number;
 }
 
+const categorySchema = new Schema<string[]>();
+
 const contactInfoSchema = new Schema<IContactInfo>(
   {
     address: { type: String, required: true },
