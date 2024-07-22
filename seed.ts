@@ -46,7 +46,7 @@ const businesses = [
       openAt: "08:00",
       closeAt: "22:00",
     },
-    rating: 0,
+    rating: 5,
   },
   {
     name: "Slice of Heaven",
@@ -62,7 +62,7 @@ const businesses = [
       openAt: "11:00",
       closeAt: "23:00",
     },
-    rating: 0,
+    rating: 4,
   },
   {
     name: "Readers' Corner",
@@ -78,7 +78,7 @@ const businesses = [
       openAt: "09:00",
       closeAt: "21:00",
     },
-    rating: 0,
+    rating: 3,
   },
   {
     name: "Green Goodies",
@@ -94,7 +94,7 @@ const businesses = [
       openAt: "08:00",
       closeAt: "20:00",
     },
-    rating: 0,
+    rating: 2,
   },
   {
     name: "Gadget Galaxy",
