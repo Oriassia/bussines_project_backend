@@ -35,6 +35,43 @@ function buildCritiria(query: any) {
   return critiria;
 }
 
+export async function getBusinessesCount(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { query } = req;
+  const critiria = buildCritiria(query);
+  try {
+    const count = await Business.countDocuments(critiria);
+    res.status(200).json({ count });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export async function getBusinessesCategories(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    // Fetch businesses and select the 'categories' field
+    const businesses = await Business.find().select("category").lean().exec();
+
+    // Extract the categories field from each business
+    const categories = businesses.flatMap((business) => {
+      return business.category;
+    });
+
+    // Return unique categories if needed
+    const uniqueCategories = [...new Set(categories)];
+
+    res.status(200).json(uniqueCategories);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 export async function getBusinesses(
   req: Request,
   res: Response

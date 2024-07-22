@@ -249,6 +249,20 @@ const reviews = [
   },
 ];
 
+// const categories = [
+//   { name: "Cafe" },
+//   { name: "Restaurant" },
+//   { name: "Bookstore" },
+//   { name: "Health Food" },
+//   { name: "Electronics" },
+//   { name: "Gym" },
+//   { name: "Art Gallery" },
+//   { name: "Pet Store" },
+//   { name: "Music Store" },
+//   { name: "Clothing Store" },
+//   { name: "Spa" },
+// ];
+
 async function seedDB() {
   try {
     await connectDB(); // Connect to the database
@@ -256,6 +270,7 @@ async function seedDB() {
     await Business.deleteMany({});
     await Review.deleteMany({});
     await Like.deleteMany({});
+    // await Category;
 
     await Like.insertMany([]);
     // Hash passwords and create users
