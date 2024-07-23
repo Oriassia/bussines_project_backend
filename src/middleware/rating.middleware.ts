@@ -11,7 +11,12 @@ export async function updateBusinessRating(businessId: Types.ObjectId) {
   else {
     averageRating =
       businessReviews.reduce((sum: number, review: IReview) => {
-        return sum + review.rating ? review.rating : 0;
+        return (
+          sum +
+          (review.rating !== undefined && review.rating !== null
+            ? review.rating
+            : 0)
+        );
       }, 0) / businessReviews.length;
   }
   await Business.findByIdAndUpdate(businessId, { rating: averageRating });
