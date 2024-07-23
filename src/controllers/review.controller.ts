@@ -107,7 +107,7 @@ async function deleteLike(req: Request, res: Response): Promise<void> {
     await Like.findOneAndDelete({ user: userId, review: reviewId });
     await Review.findByIdAndUpdate(reviewId, { $inc: { likes: -1 } });
     await User.findByIdAndUpdate(userId, { $pull: { likes: reviewId } });
-    io.emit("unlikedReview", { userId, reviewId });
+    io.emit("unlikedReview", { user: userId, review: reviewId });
     res.status(201).json({ message: "Like removed successfully" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

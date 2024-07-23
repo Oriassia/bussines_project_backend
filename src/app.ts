@@ -9,7 +9,7 @@ import { createServer, Server } from "http";
 import { Server as SocketIOServer } from "socket.io";
 
 const app: Application = express();
-const server: Server = createServer(app);
+export const server: Server = createServer(app);
 export const io = new SocketIOServer(server, {
   cors: {
     origin: "*",
