@@ -1,4 +1,3 @@
-// import path from "path";
 import path from "path";
 import app, { server } from "./app";
 
